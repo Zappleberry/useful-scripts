@@ -1,0 +1,3 @@
+echo "Empty Password Field" | dmenu -p "Enter Sudo Password:" -nb "#1c2023" -nf "#1c2023" -sb "#95aec7" -sf "#1c2023" | sudo -Sv
+
+sudo $1
