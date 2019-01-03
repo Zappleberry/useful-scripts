@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# This is made to play episodes of a series that have been marked in some numerical order. Best used with databases that are organized with similar naming scheme to:
+# "[$SERIES_NAME].S[$SEASON]E[$EPISODE].[$SEASON_NAME].[$EPISODE_NAME]"
+
+episodes=$(ls -al | tail -n +3 | grep -iE 'mp4|mkv|avi' | grep -iA 100 "$1" | tr '\n' ' ')
+
+mpv $episodes
