@@ -8,6 +8,7 @@ then
 fi
 
 o=$(umount -v $mount_point 2>&1)
+sync
 
 if [ -z "$o" ]
 then
