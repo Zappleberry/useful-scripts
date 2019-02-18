@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Pipe or give this script a url and it will dicern how to handle it.
+# if the file is a image then it will be opened in sxiv
+# if the file is a video it will be opened in mpv
+# if the file is a pdf it will be downloaded
+# else the file will open in the browser
+
+ext="${1##*.}"
+mpvFiles="mkv mp4 gif"
+fehFiles="png jpg jpeg jpe"
+wgetFiles="pdf"
+
+if echo $mpvFiles | grep -w $ext > /dev/null; then
+	nohup mpv --loop --quiet "$1" > /dev/null &
+elif echo $fehFiles | grep -w $ext > /dev/null; then
+	nohup feh "$1" > /dev/null &
+elif echo $wgetFiles | grep -w $ext > /dev/null; then
+	nohup wget "$1" > /dev/null &
+else
+	nohup $BROWSER "$1" > /dev/null &
+fi
