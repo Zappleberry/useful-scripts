@@ -7,7 +7,7 @@
 # else the file will open in the browser
 
 ext="${1##*.}"
-mpvFiles="mkv mp4 gif"
+mpvFiles="mkv mp4 gif avi"
 fehFiles="png jpg jpeg jpe"
 wgetFiles="pdf"
 
