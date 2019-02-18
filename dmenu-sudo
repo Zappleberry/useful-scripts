@@ -1,3 +1,5 @@
 #!/bin/sh
 
+# the <&- allows dmenu to be run with no options
+
 dmenu -p "Enter Sudo Password:" -nb "#1c2023" -nf "#1c2023" -sb "#95aec7" -sf "#1c2023" <&-
