@@ -4,7 +4,6 @@
 # "[$SERIES_NAME].S[$SEASON]E[$EPISODE].[$SEASON_NAME].[$EPISODE_NAME]"
 # "[$SERIES_NAME].S[$SEASON].[$SEASON_NAME].E[$EPISODE].[$EPISODE_NAME]"
 
-
-episodes=$(ls -al | tail -n +3 | grep -iE 'mp4|mkv|avi|vob|webm|m4v' | grep -iA 1000 "$1" | tr '\n' ' ')
+episodes=$(ls -al | tail -n +3 | grep -iE 'mp4|mkv|avi|vob|webm|m4v' | grep -iA 1000 "$1" | awk -F' ' '{print $9}' | tr '\n' ' ')
 
 mpv $episodes
