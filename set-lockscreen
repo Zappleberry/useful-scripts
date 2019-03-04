@@ -1,0 +1,18 @@
+#!/bin/sh
+
+ratio=$(echo "$(convert $1 -print '%w.0/%h.0' /dev/null)" | bc -l)
+screenratio=$(echo "$(xrandr | grep 'current' | sed 's/.*current //' | sed 's/, max.*//'| sed 's/ x /\//')" | bc -l)
+screenwidth=$(xrandr | grep 'current' | sed 's/.*current //' | sed 's/, max.*//'| sed 's/ x .*//')
+screenheight=$(xrandr | grep 'current' | sed 's/.*current //' | sed 's/, max.*//'| sed 's/.* x //')
+seperator='x'
+
+#echo $ratio
+#echo $screenratio
+#echo "Screen width: $screenwidth"
+#echo "screen height: $screenheight"
+
+if [ -z $(echo "$ratio<$screenratio" | bc | grep -v '1') ]; then
+	convert -resize $screenwidth$seperator $1 ~/.lock.png
+else
+	convert -resize $seperator$screenheight $1 ~/.lock.png
+fi
