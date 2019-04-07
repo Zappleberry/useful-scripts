@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# This script will pull up vpn connections available for Network Manager and connect to them
+
+chosen=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu)
+
+nmcli con up $chosen
