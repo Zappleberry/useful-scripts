@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# This script will pull up vpn connections available for Network Manager and connect to them
+chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
 
-chosen=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu_run -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
-
-nmcli con up $chosen
+# Write a case statement to call 

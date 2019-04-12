@@ -2,6 +2,8 @@
 
 # This script will pull up vpn connections available for Network Manager and connect to them
 
-chosen=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu_run -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+chosen=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
 
-nmcli con up $chosen
+state=$(nmcli con up $chosen)
+#if [ -n $(echo "state" | grep success ] 
+notify-send "VPN" "Connected to $chosen"
