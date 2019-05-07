@@ -1,5 +1,19 @@
 #!/bin/bash
 
+nm-vpn-up () { \
+	connection=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	state=$(nmcli con up $connection)
+	#if [ -n $(echo "state" | grep success ] 
+	notify-send "VPN" "Connected to $connection"
+}
+
+nm-vpn-down () { \
+	connection=$(nmcli | grep 'VPN connection' | sed 's/\sVPN\sconnection//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	nmcli con down $connection
+}
+
 chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
 
 # Write a case statement to call 
