@@ -3,3 +3,9 @@
 chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
 
 # Write a case statement to call 
+
+case $chosen in
+	Up) nm-vpn-up;;
+	Down) nm-vpn-down;;
+	*) notify-send -u critical "VPN" "Could not resolve management string";;
+esac
