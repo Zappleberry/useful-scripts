@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# copies the current directory into xclip.
+
+pwd | xclip -i

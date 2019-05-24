@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Changes to directory on clipboard
+
+cd $(xclip -o)
