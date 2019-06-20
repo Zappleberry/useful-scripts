@@ -5,6 +5,9 @@
 # if the file is a video it will be opened in mpv
 # if the file is a pdf it will be downloaded
 # else the file will open in the browser
+#  -t '#1c2023' -T '#c795ae' -u '#1c2023' -U '#c7ae95'
+
+BROWSE="tabbed -cr 2 surf -pe x"
 
 ext="${1##*.}"
 videoFiles="mkv mp4 gif avi"
@@ -22,5 +25,5 @@ elif [ -z $(echo $1 | grep -ivE $ytFiles) ]; then
 	# change me to youtubedl?
 	nohup mpv --quiet "$1" > /dev/null &
 else
-	nohup $BROWSER "$1" > /dev/null &
+	nohup $BROWSE "$1" > /dev/null &
 fi
