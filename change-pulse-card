@@ -1,0 +1,13 @@
+#!/bin/sh
+
+pgrep -x pulseaudio || (pulseaudio --start) >> /dev/null
+
+cards=$(pacmd list-cards | grep -A 1000 profiles: | grep -B 1000 "active" | tail -n +2 | head -n -1 | sed -Ee "s/\(.*\)//g" | sed -Ee "s/:\ \w*\s.*//g" | tr -d "\t")
+#pacmd list-cards | grep -A 1000 profiles: | grep -B 1000 active | tail -n +2 | head -n -1
+
+chosen=$(echo "$cards" | dmenu -p "Chose pulse card:" -l 10 -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+
+if [ -z "$chosen" ]; then exit; fi
+
+pacmd set-card-profile 0 $chosen
+notify-send "Pulseaudio" "Card profile changed to $chosen"
