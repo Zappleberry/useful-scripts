@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -z "$(pgrep -x 'kodi')" ]
+then
+	notify-send "Kodi" "Starting Kodi"
+	kodi
+else
+	notify-send "Kodi" "Kodi already started"
+fi
