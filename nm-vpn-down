@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# This script will pull up active NetworkManager VPN connections and disconnect from the selected connection
-
-
-chosen=$(nmcli | grep 'VPN connection' | sed 's/\sVPN\sconnection//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
-
-nmcli con down $chosen
