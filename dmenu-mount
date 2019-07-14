@@ -1,11 +1,32 @@
 #!/bin/bash
 
+getmount() { \
+	[ -z "$chosen" ] && exit 1
+	mp="$(find $1 2>/dev/null | dmenu -i -p "Type in mount point:" -fn 'Hack-9' -l 10 -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')"
+	[ "$mp" = "" ] && exit 1
+	if [ ! -d "$mp" ]; then
+		mkdiryn=$(printf "No\\nYes" | dmenu -i -p "$mp does not exist. Create it?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')
+		[ "$mkdiryn" = "Yes" ] && (mkdir -p "$mp" || sudo -A mkdir -p "$mp")
+	fi
+}
+
 drive-mount () { \
-	notify-send "dmenu-mount" "Drive Mounting not ready to use"
+	chosen="$(echo "$usbdevices" | dmenu -i -p "Mount which drive?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023' | awk '{print $1}')"
+	[ -z "$chosen" ] && notify-send "dmenu-mount" "No device selected" && exit;
+	sudo -A mount "$chosen" 2>/dev/null && notify-send "dmenu-mount" "$chosen mounted." && exit 0
+	alreadymounted=$(lsblk -nrpo "name,type,mountpoint" | awk '$2=="part"&&$3!~/\/boot|\/home$|SWAP/&&length($3)>1{printf "-not \\( -path *%s -prune \\) \\ \n",$3}')
+	getmount "/mnt /media /mount /home -maxdepth 5 -type d $alreadymounted"
+	partitiontype="$(lsblk -no "fstype" "$chosen")"
+	case "$partitiontype" in
+		"vfat") sudo -A mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
+		*) sudo -A mount -o umask=0077,uid=$(id -u $(whoami)),gid=$(id -g $(whoami)) "$chosen" "$mp";;
+ 		#user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" "$mp";
+	esac
+	notify-send "dmenu-mount" "Drive $chosen:\n$chosen mounted to $mp."
 }
 
 drive-umount () { \
-	mount_point=$(lsblk | tail -n +2 | grep -iv sda | grep -iv disk | awk -F' ' '{print $7}' | grep -vx '' | dmenu -i -p "Unmount:" -l 10 -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+	mount_point=$(lsblk | tail -n +2 | grep -iv sda | grep -iv disk | awk -F' ' '{print $7}' | grep -vx '' | dmenu -i -p "Unmount:" -l 10 -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')
 
 	[ -z "$mount_point" ] && notify-send "dmenu-mount" "No mountpoint selected" && exit;
 	
@@ -23,6 +44,8 @@ drive-umount () { \
 	else
 		notify-send "dmenu-umount" "Drive $mount_point:\nunmount failed\n$o"
 	fi
+
+	exit
 }
 
 android-mount () { \
@@ -34,7 +57,7 @@ android-umount () { \
 }
 
 drive-specify () { \
-	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Drive Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Drive Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')
 	
 	case $mode in
 		Mount) drive-mount;;
@@ -44,7 +67,7 @@ drive-specify () { \
 }
 
 android-specify () { \
-	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Android Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Android Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')
 	
 	case $mode in
 		Mount) android-mount;;
@@ -53,10 +76,28 @@ android-specify () { \
 	esac
 }
 
-mode=$(echo -e 'Drive\nAndroid' | dmenu -i -p 'Drive type:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
 
-case $mode in
-	Drive) drive-specify;;
-	Android) android-specify;;
-	*) notify-send "dmenu-mount" "Drive type not specified";;
-esac
+usbdevices="$(lsblk -rpo "name,type,size,mountpoint" | awk '$2=="part"&&$4==""{printf "%s (%s)\n", $1, $3}')"
+anddevices=$(simple-mtpfs -l 2>/dev/null)
+
+if [ -z "$usbdevices" ] && [ -z "$anddevices" ]
+then
+	notify-send "dmenu-mount" "No mountable devices"
+	exit
+elif [ -z "$anddevices" ]
+then
+	drive-specify
+elif [ -z "$usbdevices" ]
+then
+	android-specify
+else
+	
+	mode="$(echo -e 'Drive\nAndroid' | dmenu -i -p 'Drive type:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')"
+	
+	case $mode in
+		Drive) drive-specify;;
+		Android) android-specify;;
+		*) notify-send "dmenu-mount" "Drive type not specified";;
+	esac
+	
+fi
