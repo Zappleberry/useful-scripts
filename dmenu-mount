@@ -1,0 +1,62 @@
+#!/bin/bash
+
+drive-mount () { \
+	notify-send "dmenu-mount" "Drive Mounting not ready to use"
+}
+
+drive-umount () { \
+	mount_point=$(lsblk | tail -n +2 | grep -iv sda | grep -iv disk | awk -F' ' '{print $7}' | grep -vx '' | dmenu -i -p "Unmount:" -l 10 -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+
+	[ -z "$mount_point" ] && notify-send "dmenu-mount" "No mountpoint selected" && exit;
+	
+	if [ "$mount_point" = "/" -o "$mount_point" = "/home" -o "$mount_point" = "/boot/efi" -o "$mount_point" = "[SWAP]" ]
+	then
+		notify-send "umount" "$mount_point is dangerous to unmount" && exit
+	fi
+	
+	o=$(sudo -A umount $mount_point 2>&1)
+	sync
+	
+	if [ -z "$(echo $o | grep -v unmounted)" ]
+	then
+		notify-send "dmenu-mount" "Drive $mount_point:\nunmounted successfully"
+	else
+		notify-send "dmenu-umount" "Drive $mount_point:\nunmount failed\n$o"
+	fi
+}
+
+android-mount () { \
+	notify-send "dmenu-mount" "Android Mounting not ready to use"
+}
+
+android-umount () { \
+	notify-send "dmenu-mount" "Android Unmounting not ready to use"
+}
+
+drive-specify () { \
+	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Drive Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+	
+	case $mode in
+		Mount) drive-mount;;
+		Unmount) drive-umount;;
+		*) notify-send "dmenu-mount" "Mounting option for Drive not specified";;
+	esac
+}
+
+android-specify () { \
+	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Android Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+	
+	case $mode in
+		Mount) android-mount;;
+		Unmount) android-umount;;
+		*) notify-send "dmenu-mount" "Mounting option for Android not specified";;
+	esac
+}
+
+mode=$(echo -e 'Drive\nAndroid' | dmenu -i -p 'Drive type:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+
+case $mode in
+	Drive) drive-specify;;
+	Android) android-specify;;
+	*) notify-send "dmenu-mount" "Drive type not specified";;
+esac
