@@ -2,16 +2,16 @@
 
 getmount() { \
 	[ -z "$chosen" ] && exit 1
-	mp="$(find $1 2>/dev/null | dmenu -i -p "Type in mount point:" -fn 'Hack-9' -l 10 -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')"
+	mp="$(find $1 2>/dev/null | dmenu -i -p "Type in mount point:" -fn 'Hack-9' -l 10 -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023')"
 	[ "$mp" = "" ] && exit 1
 	if [ ! -d "$mp" ]; then
-		mkdiryn=$(printf "No\\nYes" | dmenu -i -p "$mp does not exist. Create it?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')
+		mkdiryn=$(printf "No\\nYes" | dmenu -i -p "$mp does not exist. Create it?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023')
 		[ "$mkdiryn" = "Yes" ] && (mkdir -p "$mp" || sudo -A mkdir -p "$mp")
 	fi
 }
 
 drive-mount () { \
-	chosen="$(echo "$usbdevices" | dmenu -i -p "Mount which drive?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023' | awk '{print $1}')"
+	chosen="$(echo "$usbdevices" | dmenu -i -p "Mount which drive?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023' | awk '{print $1}')"
 	[ -z "$chosen" ] && notify-send "dmenu-mount" "No device selected" && exit;
 	sudo -A mount "$chosen" 2>/dev/null && notify-send "dmenu-mount" "$chosen mounted." && exit 0
 	alreadymounted=$(lsblk -nrpo "name,type,mountpoint" | awk '$2=="part"&&$3!~/\/boot|\/home$|SWAP/&&length($3)>1{printf "-not \\( -path *%s -prune \\) \\ \n",$3}')
@@ -26,7 +26,7 @@ drive-mount () { \
 }
 
 drive-umount () { \
-	mount_point=$(lsblk | tail -n +2 | grep -iv sda | grep -iv disk | awk -F' ' '{print $7}' | grep -vx '' | dmenu -i -p "Unmount:" -l 10 -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')
+	mount_point=$(lsblk | tail -n +2 | grep -iv sda | grep -iv disk | awk -F' ' '{print $7}' | grep -vx '' | dmenu -i -p "Unmount:" -l 10 -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023')
 
 	[ -z "$mount_point" ] && notify-send "dmenu-mount" "No mountpoint selected" && exit;
 	
@@ -57,7 +57,7 @@ android-umount () { \
 }
 
 drive-specify () { \
-	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Drive Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')
+	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Drive Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023')
 	
 	case $mode in
 		Mount) drive-mount;;
@@ -67,7 +67,7 @@ drive-specify () { \
 }
 
 android-specify () { \
-	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Android Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')
+	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Android Options:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023')
 	
 	case $mode in
 		Mount) android-mount;;
@@ -92,7 +92,7 @@ then
 	android-specify
 else
 	
-	mode="$(echo -e 'Drive\nAndroid' | dmenu -i -p 'Drive type:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#c7ae95' -sf '#1c2023')"
+	mode="$(echo -e 'Drive\nAndroid' | dmenu -i -p 'Drive type:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023')"
 	
 	case $mode in
 		Drive) drive-specify;;
