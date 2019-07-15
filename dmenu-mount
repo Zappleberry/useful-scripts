@@ -1,9 +1,10 @@
 #!/bin/bash
+# Parts derived from some of Luke Smith's dmenu scripts
 
 getmount() { \
 	[ -z "$chosen" ] && exit 1
 	mp="$(find $1 2>/dev/null | dmenu -i -p "Type in mount point:" -fn 'Hack-9' -l 10 -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023')"
-	[ "$mp" = "" ] && exit 1
+	[ "$mp" = "" ] && notify-send "dmenu-mount" "Mount point null" && exit 1
 	if [ ! -d "$mp" ]; then
 		mkdiryn=$(printf "No\\nYes" | dmenu -i -p "$mp does not exist. Create it?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023')
 		[ "$mkdiryn" = "Yes" ] && (mkdir -p "$mp" || sudo -A mkdir -p "$mp")
@@ -49,11 +50,17 @@ drive-umount () { \
 }
 
 android-mount () { \
-	notify-send "dmenu-mount" "Android Mounting not ready to use"
+	chosen=$(echo "$anddevices" | dmenu -i -p "Which Android device?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023' | cut -d : -f 1)
+	[ -z "$chosen" ] && notify-send "dmenu-umount" "No Android device selected" && exit;
+	getmount "$HOME -maxdepth 3 -type d"
+	simple-mtpfs --device "$chosen" "$mp"
+	notify-send "dmenu-mount" "Android $chosen:\nAndroid device mounted to $mp."
 }
 
 android-umount () { \
-	notify-send "dmenu-mount" "Android Unmounting not ready to use"
+	chosen=$(awk '/simple-mtpfs/ {print $2}' /etc/mtab | dmenu -i -p "Unmount which device?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#95c7ae' -sf '#1c2023')
+	[ -z "$chosen" ] && notify-send "dmenu-mount" "No mountpoint selected" && exit;
+	sudo -A umount -l "$chosen" && notify-send "dmenu-mount" "Android $chosen:\n$chosen unmounted."
 }
 
 drive-specify () { \
