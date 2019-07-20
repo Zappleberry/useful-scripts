@@ -1,0 +1,61 @@
+#!/bin/bash
+
+nm-vpn-up () { \
+	connection=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	state=$(nmcli con up $connection)
+	#if [ -n $(echo "state" | grep success ] 
+	notify-send "nm-dmenu" "VPN connected to $connection"
+}
+
+nm-vpn-down () { \
+	connection=$(nmcli | grep 'VPN connection' | sed 's/\sVPN\sconnection//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	nmcli con down $connection
+}
+
+nm-vpn-resolve () { \
+	chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	# Write a case statement to call 
+
+	case $chosen in
+		Up) nm-vpn-up;;
+		Down) nm-vpn-down;;
+		*) notify-send -u critical "nm-dmenu" "Could not resolve management string for VPN";;
+	esac
+}
+
+nm-device-resolve () { \
+	act=$(echo -e 'connect\ndelete\ndisconnect' | dmenu -i -p 'Device Operation:' -fn 'hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	[ -z "$act" ] && notify-send -u critical "nm-dmenu" "No device operation specified" && exit 1
+
+	chosen=$(nmcli device | tail -n +2 | awk '{print $1}' | dmenu -i -p 'Device:' -fn 'hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	[ -z "$chosen" ] && notify-send -u critical "nm-dmenu" "No device specified" && exit 1
+
+	output=$(nmcli device $act "$chosen")
+	[ -z "$(echo $output | grep -iv error)" ] && notify-send -u critical "nm-dmenu" "Device error:\n$output" && exit 1
+	notify-send "nm-dmenu" "Device $act $chosen"
+}
+
+nm-connection-resolve () { \
+	act=$(echo -e 'up\ndown' | dmenu -i -p 'Connection Operation:' -fn 'hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	[ -z "$act" ] && notify-send -u critical "nm-dmenu" "No connection operation specified" && exit 1
+
+	chosen=$(nmcli connection | grep -iv vpn | tail -n +2 | awk -F'   ' '{print $1}' | dmenu -i -p 'Connection:' -fn 'hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	[ -z "$chosen" ] && notify-send -u critical "nm-dmenu" "No connection specified" && exit 1
+
+	output=$(nmcli connection $act "$chosen")
+	[ -z "$(echo $output | grep -iv error)" ] && notify-send -u critical "nm-dmenu" "Connection error:\n$output" && exit 1
+	notify-send "nm-dmenu" "Connection $act $chosen"
+}
+
+chosen=$(echo -e 'Device\nConnection\nVPN\nBluetooth' | dmenu -i -p 'Type to Manage:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+case $chosen in
+	Device) nm-device-resolve;;
+	Connection) nm-connection-resolve;;
+	VPN) nm-vpn-resolve;;
+	Bluetooth) nm-bt-resolve;;
+	*) notify-send -u critical "nm-dmenu" "Could not resolve management string"
+esac
