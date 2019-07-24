@@ -1,5 +1,6 @@
 #!/bin/bash
 
 # copies the current directory into xclip.
+# copies to primary to avoid bloat
 
 pwd | xclip -i -selection primary
