@@ -3,7 +3,7 @@
 if [ -z "$(pgrep -x 'kodi')" ]
 then
 	displayselect
-	change-pulse-card
+	dmenu-pa-card
 	notify-send "Kodi" "Starting Kodi"
 	kodi
 else
