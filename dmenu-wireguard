@@ -1,0 +1,33 @@
+#!/bin/bash
+
+wireguard-up () { \
+	vpn=$(ls /etc/wireguard/ | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	valid=$(ls /etc/wireguard/ | grep $vpn)
+
+	[ -z "$vpn" ] && notify-send -u critical "dmenu-wireguard" "No VPN chosen" && exit 1
+
+	[ -z "$valid" ] && notify-send -u critical "dmenu-wireguard" "Invalid VPN chosen" && exit 1
+
+	sudo -A wg-quick up $vpn && notify-send "dmenu-wireguard" " Connected to $vpn"
+}
+
+wireguard-down () { \
+	vpn=$(wg show interfaces | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	valid=$(wg show interfaces | grep $vpn)
+
+	[ -z "$vpn" ] && notify-send -u critical "dmenu-wireguard" "No VPN chosen" && exit 1
+
+	[ -z "$valid" ] && notify-send -u critical "dmenu-wireguard" "Invalid VPN Chosen" && exit 1
+
+	sudo -A wg-quick down $vpn && notify-send "dmenu-wireguard" "Disconnected from $vpn"
+}
+
+chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Type to Manage:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+case $chosen in
+	Up) wireguard-up;;
+	Down) wireguard-down;;
+	*) notify-send -u critical "dmenu-wireguard" "Could not resolve management string for WireGuard"
+esac
