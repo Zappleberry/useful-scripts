@@ -1,5 +1,7 @@
 #!/bin/bash
 
 # Changes to directory on clipboard
+# Doesn't work for some reason?
+# Running this command in bash prompt works fine so unsure what the issue is
 
-cd $(xclip -o)
+cd $(xclip -o -selection primary)
