@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#portrait (left)
+#portrait (right)
 
 xrandr -o right
 xinput set-prop "Atmel Atmel maXTouch Digitizer" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
