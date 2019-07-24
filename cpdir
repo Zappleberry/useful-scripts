@@ -2,4 +2,4 @@
 
 # copies the current directory into xclip.
 
-pwd | xclip -i
+pwd | xclip -i -selection primary
