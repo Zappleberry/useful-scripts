@@ -1,6 +1,6 @@
 #!/bin/bash
 
-nm-vpn-up () { \
+nm-openvpn-up () { \
 	connection=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
 
 	state=$(nmcli con up $connection)
@@ -8,13 +8,13 @@ nm-vpn-up () { \
 	notify-send "nm-dmenu" "VPN connected to $connection"
 }
 
-nm-vpn-down () { \
+nm-openvpn-down () { \
 	connection=$(nmcli | grep 'VPN connection' | sed 's/\sVPN\sconnection//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
 
 	nmcli con down $connection
 }
 
-nm-vpn-resolve () { \
+nm-openvpn-resolve () { \
 	chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
 
 	# Write a case statement to call 
@@ -23,6 +23,40 @@ nm-vpn-resolve () { \
 		Up) nm-vpn-up;;
 		Down) nm-vpn-down;;
 		*) notify-send -u critical "nm-dmenu" "Could not resolve management string for VPN";;
+	esac
+}
+
+nm-wireguard-up () { \
+	vpn=$(ls /etc/wireguard/ | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	valid=$(ls /etc/wireguard/ | grep $vpn)
+
+	[ -z "$vpn" ] && notify-send -u critical "dmenu-wireguard" "No VPN chosen" && exit 1
+
+	[ -z "$valid" ] && notify-send -u critical "dmenu-wireguard" "Invalid VPN chosen" && exit 1
+
+	sudo -A wg-quick up $vpn && notify-send "dmenu-wireguard" " Connected to $vpn"
+}
+
+nm-wireguard-down () { \
+	vpn=$(wg show interfaces | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	valid=$(wg show interfaces | grep $vpn)
+
+	[ -z "$vpn" ] && notify-send -u critical "dmenu-wireguard" "No VPN chosen" && exit 1
+
+	[ -z "$valid" ] && notify-send -u critical "dmenu-wireguard" "Invalid VPN Chosen" && exit 1
+
+	sudo -A wg-quick down $vpn && notify-send "dmenu-wireguard" "Disconnected from $vpn"
+}
+
+nm-wireguard-resolve () { \
+	chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Type to Manage:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+
+	case $chosen in
+		Up) nm-wireguard-up;;
+		Down) nm-wireguard-down;;
+		*) notify-send -u critical "dmenu-wireguard" "Could not resolve management string for WireGuard"
 	esac
 }
 
@@ -55,7 +89,7 @@ chosen=$(echo -e 'Device\nConnection\nVPN\nBluetooth' | dmenu -i -p 'Type to Man
 case $chosen in
 	Device) nm-device-resolve;;
 	Connection) nm-connection-resolve;;
-	VPN) nm-vpn-resolve;;
+	VPN) nm-wireguard-resolve;;
 	Bluetooth) nm-bt-resolve;;
 	*) notify-send -u critical "nm-dmenu" "Could not resolve management string"
 esac
