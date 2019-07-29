@@ -1,6 +1,12 @@
 #!/bin/sh
 
-chosen=$(grep -v "#" ~/.emoji | dmenu -i -p "Emoji:" -l 10 -fn 'Hack-13' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+dmenufont='Hack-13'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#aec795'
+dmenusf='#1c2023'
+
+chosen=$(grep -v "#" ~/.emoji | dmenu -i -p "Emoji:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 [ "$chosen" != "" ] || exit
 

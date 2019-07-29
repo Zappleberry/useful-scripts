@@ -1,7 +1,13 @@
 #!/bin/bash
 
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#ae95c7'
+dmenusf='#1c2023'
+
 wireguard-up () { \
-	vpn=$(ls /etc/wireguard/ | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	vpn=$(ls /etc/wireguard/ | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	valid=$(ls /etc/wireguard/ | grep $vpn)
 
@@ -13,7 +19,7 @@ wireguard-up () { \
 }
 
 wireguard-down () { \
-	vpn=$(wg show interfaces | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	vpn=$(wg show interfaces | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	valid=$(wg show interfaces | grep $vpn)
 
@@ -24,7 +30,7 @@ wireguard-down () { \
 	sudo -A wg-quick down $vpn && notify-send "dmenu-wireguard" "Disconnected from $vpn"
 }
 
-chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Type to Manage:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Type to Manage:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 case $chosen in
 	Up) wireguard-up;;

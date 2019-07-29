@@ -1,7 +1,13 @@
 #!/bin/bash
 
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#ae95c7'
+dmenusf='#1c2023'
+
 nm-openvpn-up () { \
-	connection=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	connection=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	state=$(nmcli con up $connection)
 	#if [ -n $(echo "state" | grep success ] 
@@ -9,13 +15,13 @@ nm-openvpn-up () { \
 }
 
 nm-openvpn-down () { \
-	connection=$(nmcli | grep 'VPN connection' | sed 's/\sVPN\sconnection//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	connection=$(nmcli | grep 'VPN connection' | sed 's/\sVPN\sconnection//g' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	nmcli con down $connection
 }
 
 nm-openvpn-resolve () { \
-	chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	# Write a case statement to call 
 
@@ -27,7 +33,7 @@ nm-openvpn-resolve () { \
 }
 
 nm-wireguard-up () { \
-	vpn=$(ls /etc/wireguard/ | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	vpn=$(ls /etc/wireguard/ | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	valid=$(ls /etc/wireguard/ | grep $vpn)
 
@@ -39,7 +45,7 @@ nm-wireguard-up () { \
 }
 
 nm-wireguard-down () { \
-	vpn=$(wg show interfaces | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	vpn=$(wg show interfaces | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	valid=$(wg show interfaces | grep $vpn)
 
@@ -51,7 +57,7 @@ nm-wireguard-down () { \
 }
 
 nm-wireguard-resolve () { \
-	chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Type to Manage:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Type to Manage:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	case $chosen in
 		Up) nm-wireguard-up;;
@@ -61,10 +67,10 @@ nm-wireguard-resolve () { \
 }
 
 nm-device-resolve () { \
-	act=$(echo -e 'connect\ndelete\ndisconnect' | dmenu -i -p 'Device Operation:' -fn 'hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	act=$(echo -e 'connect\ndelete\ndisconnect' | dmenu -i -p 'Device Operation:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 	[ -z "$act" ] && notify-send -u critical "dmenu-nm" "No device operation specified" && exit 1
 
-	chosen=$(nmcli device | tail -n +2 | awk '{print $1}' | dmenu -i -p 'Device:' -fn 'hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	chosen=$(nmcli device | tail -n +2 | awk '{print $1}' | dmenu -i -p 'Device:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 	[ -z "$chosen" ] && notify-send -u critical "dmenu-nm" "No device specified" && exit 1
 
 	output=$(nmcli device $act "$chosen")
@@ -73,10 +79,10 @@ nm-device-resolve () { \
 }
 
 nm-connection-resolve () { \
-	act=$(echo -e 'up\ndown' | dmenu -i -p 'Connection Operation:' -fn 'hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	act=$(echo -e 'up\ndown' | dmenu -i -p 'Connection Operation:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 	[ -z "$act" ] && notify-send -u critical "dmenu-nm" "No connection operation specified" && exit 1
 
-	chosen=$(nmcli connection | grep -iv vpn | tail -n +2 | awk -F'   ' '{print $1}' | dmenu -i -p 'Connection:' -fn 'hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	chosen=$(nmcli connection | grep -iv vpn | tail -n +2 | awk -F'   ' '{print $1}' | dmenu -i -p 'Connection:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 	[ -z "$chosen" ] && notify-send -u critical "dmenu-nm" "No connection specified" && exit 1
 
 	output=$(nmcli connection $act "$chosen")
@@ -84,7 +90,7 @@ nm-connection-resolve () { \
 	notify-send "dmenu-nm" "Connection $act $chosen"
 }
 
-chosen=$(echo -e 'Device\nConnection\nVPN\nBluetooth' | dmenu -i -p 'Type to Manage:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+chosen=$(echo -e 'Device\nConnection\nVPN\nBluetooth' | dmenu -i -p 'Type to Manage:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 case $chosen in
 	Device) nm-device-resolve;;

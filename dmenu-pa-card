@@ -1,11 +1,17 @@
 #!/bin/sh
 
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#aec795'
+dmenusf='#1c2023'
+
 pgrep -x pulseaudio || (pulseaudio --start) >> /dev/null
 
 cards=$(pacmd list-cards | grep -A 1000 profiles: | grep -B 1000 "active" | tail -n +2 | head -n -1 | sed -Ee "s/\(.*\)//g" | sed -Ee "s/:\ \w*\s.*//g" | tr -d "\t")
 #pacmd list-cards | grep -A 1000 profiles: | grep -B 1000 active | tail -n +2 | head -n -1
 
-chosen=$(echo "$cards" | dmenu -p "Chose pulse card:" -l 10 -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')
+chosen=$(echo "$cards" | dmenu -p "Chose pulse card:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 if [ -z "$chosen" ]; then exit; fi
 

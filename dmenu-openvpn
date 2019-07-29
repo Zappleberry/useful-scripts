@@ -1,7 +1,13 @@
 #!/bin/bash
 
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#ae95c7'
+dmenusf='#1c2023'
+
 nm-vpn-up () { \
-	connection=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	connection=$(nmcli connection show | grep -i vpn | awk -F' ' '{print $1}' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	state=$(nmcli con up $connection)
 	#if [ -n $(echo "state" | grep success ] 
@@ -9,12 +15,12 @@ nm-vpn-up () { \
 }
 
 nm-vpn-down () { \
-	connection=$(nmcli | grep 'VPN connection' | sed 's/\sVPN\sconnection//g' | dmenu -i -p 'VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+	connection=$(nmcli | grep 'VPN connection' | sed 's/\sVPN\sconnection//g' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	nmcli con down $connection
 }
 
-chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#ae95c7' -sf '#1c2023')
+chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 # Write a case statement to call 
 
