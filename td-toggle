@@ -1,10 +1,18 @@
 #!/bin/sh
+
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#95c7ae'
+dmenusf='#1c2023'
+
 # If transmission-daemon is running, will ask to kill, else will ask to start.
+
 if pgrep -x transmission-da >/dev/null ;
 then
-	[ "$(printf "No\\nYes" | dmenu -i -p "Kill transmission-daemon?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')" = "Yes" ] && killall transmission-da && notify-send "transmission-daemon killed."
+	[ "$(printf "No\\nYes" | dmenu -i -p "Kill transmission-daemon?" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)" = "Yes" ] && killall transmission-da && notify-send "transmission-daemon killed."
 else
 	ifinstalled transmission-cli || exit
-	[ "$(printf "No\\nYes" | dmenu -i -p "Start transmission daemon?" -fn 'Hack-9' -nb '#1c2023' -nf '#f3f4f5' -sb '#aec795' -sf '#1c2023')" = "Yes" ] && transmission-daemon && notify-send "tranmission-daemon started."
+	[ "$(printf "No\\nYes" | dmenu -i -p "Start transmission daemon?" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)" = "Yes" ] && transmission-daemon && notify-send "tranmission-daemon started."
 fi
 sleep 3
