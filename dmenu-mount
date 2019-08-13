@@ -18,16 +18,16 @@ getmount() { \
 }
 
 drive-mount () { \
-	chosen="$(echo "$usbdevices" | dmenu -i -p "Mount which drive?" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)"
+	chosen="$(echo "$usbdevices" | dmenu -i -p "Mount which drive?" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf | awk '{print $1}')"
 	[ -z "$chosen" ] && notify-send "dmenu-mount" "No device selected" && exit;
 	sudo -A mount "$chosen" 2>/dev/null && notify-send "dmenu-mount" "$chosen mounted." && exit 0
 	alreadymounted=$(lsblk -nrpo "name,type,mountpoint" | awk '$2=="part"&&$3!~/\/boot|\/home$|SWAP/&&length($3)>1{printf "-not \\( -path *%s -prune \\) \\ \n",$3}')
 	getmount "/mnt /media /mount /home -maxdepth 5 -type d $alreadymounted"
 	partitiontype="$(lsblk -no "fstype" "$chosen")"
 	case "$partitiontype" in
-		"vfat") sudo -A mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
-		*) sudo -A mount -o umask=0077,uid=$(id -u $(whoami)),gid=$(id -g $(whoami)) "$chosen" "$mp";;
- 		#user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" "$mp";
+		vfat) sudo -A mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
+		#*) sudo -A mount -o umask=0077,uid=$(id -u $(whoami)),gid=$(id -g $(whoami)) "$chosen" "$mp";;
+ 		*) sudo -A mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" "$mp";;
 	esac
 	notify-send "dmenu-mount" "Drive $chosen:\n$chosen mounted to $mp."
 }
@@ -69,6 +69,14 @@ android-umount () { \
 	sudo -A umount -l "$chosen" && notify-send "dmenu-mount" "Android $chosen:\n$chosen unmounted."
 }
 
+encrypted-mount () { \
+	notify-send "dmenu-mount" "Encryted Mounting not supported yet"
+}
+
+encrypted-umount () { \
+	notify-send "dmenu-mount" "Encrypted Unmounting not supported yet"
+}
+
 drive-specify () { \
 	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Drive Options:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 	
@@ -89,28 +97,38 @@ android-specify () { \
 	esac
 }
 
+encrypted-specify () { \
+	mode=$(echo -e 'Mount\nUnmount' | dmenu -i -p 'Encrypted Drive Options:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	
+	case $mode in
+		Mount) encrypted-mount;;
+		Unmount) encrypted-umount;;
+		*) notify-send "dmenu-mount" "Mounting option for Encrypted Drive not specified";;
+	esac
+}
 
 usbdevices="$(lsblk -rpo "name,type,size,mountpoint" | awk '$2=="part"&&$4==""{printf "%s (%s)\n", $1, $3}')"
 anddevices=$(simple-mtpfs -l 2>/dev/null)
 
-if [ -z "$usbdevices" ] && [ -z "$anddevices" ]
-then
-	notify-send "dmenu-mount" "No mountable devices"
-	exit
-elif [ -z "$anddevices" ]
-then
-	drive-specify
-elif [ -z "$usbdevices" ]
-then
-	android-specify
-else
+#if [ -z "$usbdevices" ] && [ -z "$anddevices" ]
+#then
+#	notify-send "dmenu-mount" "No mountable devices"
+#	exit
+#elif [ -z "$anddevices" ]
+#then
+#	drive-specify
+#elif [ -z "$usbdevices" ]
+#then
+#	android-specify
+#else
 	
-	mode="$(echo -e 'Drive\nAndroid' | dmenu -i -p 'Drive type:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)"
+	mode="$(echo -e 'Drive\nAndroid\nEncrypted' | dmenu -i -p 'Drive type:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)"
 	
 	case $mode in
 		Drive) drive-specify;;
 		Android) android-specify;;
+		Encrypted) encrypted-specify;;
 		*) notify-send "dmenu-mount" "Drive type not specified";;
 	esac
 	
-fi
+#fi
