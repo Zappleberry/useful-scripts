@@ -26,8 +26,8 @@ drive-mount () { \
 	partitiontype="$(lsblk -no "fstype" "$chosen")"
 	case "$partitiontype" in
 		vfat) sudo -A mount -t vfat "$chosen" "$mp" -o rw,umask=0000;;
-		#*) sudo -A mount -o umask=0077,uid=$(id -u $(whoami)),gid=$(id -g $(whoami)) "$chosen" "$mp";;
- 		*) sudo -A mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" "$mp";;
+		*) sudo -A mount -o umask=0077,uid=$(id -u $(whoami)),gid=$(id -g $(whoami)) "$chosen" "$mp";;
+ 		#*) sudo -A mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" "$mp";;
 	esac
 	notify-send "dmenu-mount" "Drive $chosen:\n$chosen mounted to $mp."
 }
