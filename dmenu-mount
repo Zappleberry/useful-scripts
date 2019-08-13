@@ -33,7 +33,7 @@ drive-mount () { \
 }
 
 drive-umount () { \
-	mount_point=$(lsblk | tail -n +2 | grep -iv sda | grep -iv disk | awk -F' ' '{print $7}' | grep -vx '' | dmenu -i -p "Unmount:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	mount_point=$(lsblk -rpo "name,type,mountpoint" | grep -iv "/dev/sda" | awk '$2=="part"{print $3}' | dmenu -i -p "Unmount:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	[ -z "$mount_point" ] && notify-send "dmenu-mount" "No mountpoint selected" && exit;
 	
