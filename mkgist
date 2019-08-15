@@ -22,7 +22,8 @@ fi
 
 for FILE in "$@"
 do
-	content=$(cat $FILE | sed -r 's/\\/\\\\/g; :a; N; $!ba; s/\n/\\n/g; s/\t/\\t/g; s/"/\\"/g')
+	# I have to pipe the sed commands seperately otherwise they don't work right. for some reason
+	content=$(cat $FILE | sed -r 's/\\/\\\\/g' | sed -r ':a; N; $!ba; s/\n/\\n/g' | sed -r 's/\t/\\t/g' | sed -r 's/"/\\"/g')
 	json=$json"\"$FILE\":{\"content\":\"$content\"},"
 done
 
