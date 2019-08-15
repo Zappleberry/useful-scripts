@@ -9,13 +9,13 @@ dmenusf='#1c2023'
 if [ -z "replace this string with a empty one to use dmenu instead of read to take the credentials" ]
 then
 
-	githubuser=$(dmenu -p "Enter Github Username:" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf <&-)
-	githubpass=$(dmenu -p "Enter Github Password:" -fn $dmenufont -nb $dmenunb -nf $dmenunb -sb $dmenusb -sf $dmenusf <&-)
+	githubuser=$(dmenu -p "Username for 'https://gist.github.com':" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf <&-)
+	githubpass=$(dmenu -p "Password for 'https://gist.github.com/"$githubuser"':" -fn $dmenufont -nb $dmenunb -nf $dmenunb -sb $dmenusb -sf $dmenusf <&-)
 
 else
 
-	read -p "Enter Github Username: " githubuser
-	read -s -p "Enter Github Password: " githubpass
+	read -p "Username for 'https://gist.github.com': " githubuser
+	read -s -p "Password for 'https://gist.github.com/"$githubuser"': " githubpass
 	printf "\n"
 
 fi
