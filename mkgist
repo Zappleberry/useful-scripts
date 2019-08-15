@@ -1,0 +1,31 @@
+#!/bin/bash
+
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#c795ae'
+dmenusf='#1c2023'
+
+if [ -z "empty" ]
+then
+
+	githubuser=$(dmenu -p "Enter Github Username:" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf <&-)
+	githubpass=$(dmenu -p "Enter Github Password:" -fn $dmenufont -nb $dmenunb -nf $dmenunb -sb $dmenusb -sf $dmenusf <&-)
+
+else
+
+	read -p "Enter Github Username: " githubuser
+	read -s -p "Enter Github Password: " githubpass
+	printf "\n"
+
+fi
+
+for FILE in "$@"
+do
+	content=$(cat $FILE | sed -r 's/\\/\\\\/g; :a; N; $!ba; s/\n/\\n/g; s/\t/\\t/g; s/"/\\"/g')
+	json=$json"\"$FILE\":{\"content\":\"$content\"},"
+done
+
+json=$(echo $json | sed -e 's/.$//g')
+
+curl -X POST -d "{\"public\":true,\"files\":{$json}}" -u $githubuser:$githubpass https://api.github.com/gists
