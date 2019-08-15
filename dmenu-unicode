@@ -1,6 +1,7 @@
 #!/bin/bash
 
-dmenufont='Hack-13'
+dmenufont='Hack-9'
+dmenufontalt='Hack-13'
 dmenunb='#1c2023'
 dmenunf='#f3f4f5'
 dmenusb='#aec795'
@@ -8,7 +9,7 @@ dmenusf='#1c2023'
 
 emoji-resolve () { \
 
-	chosen=$(grep -v "#" ~/.emoji | dmenu -i -p "Emoji:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	chosen=$(grep -v "#" ~/.emoji | dmenu -i -p "Emoji:" -l 10 -fn $dmenufontalt -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 	
 	[ "$chosen" != "" ] || exit
 	
