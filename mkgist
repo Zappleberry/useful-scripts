@@ -6,7 +6,7 @@ dmenunf='#f3f4f5'
 dmenusb='#c795ae'
 dmenusf='#1c2023'
 
-if [ -z "empty" ]
+if [ -z "replace this string with a empty one to use dmenu instead of read to take the credentials" ]
 then
 
 	githubuser=$(dmenu -p "Enter Github Username:" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf <&-)
