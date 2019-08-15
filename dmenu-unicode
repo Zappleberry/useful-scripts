@@ -11,8 +11,10 @@ emoji-resolve () { \
 
 	chosen=$(grep -v "#" ~/.emoji | dmenu -i -p "Emoji:" -l 10 -fn $dmenufontalt -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 	
+	# Check to make sure character exists
 	[ "$chosen" != "" ] || exit
 	
+	# Print character into clipboard
 	c=$(echo "$chosen" | sed "s/ .*//")
 	echo "$c" | tr -d '\n' | xclip -selection clipboard
 	notify-send "dmenu-unicode" "'$c' copied to clipboard."
@@ -21,34 +23,69 @@ emoji-resolve () { \
 
 unicode-resolve () { \
 
+	# Enter Unicode character via hex
 	chosen=$(dmenu -p "Unicode Character:" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf <&-)
 
+	# Check length of unicode character to use either \u (4 digit hex) or \x (2 digit hex)
 	len=$(echo $chosen | tr -d '\n' | wc -m)
 
-	if [ "$len" = "4" ]
-	then
-		c=$(printf "\u$chosen")
-		len=$(printf "$c" | wc -m)
+	# Backup if statements. Case statements are more efficient so that is preferred.
 
-		[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
+	#if [ "$len" = "4" ]
+	#then
+	#	c=$(printf "\u$chosen")
+	#	len=$(printf "$c" | wc -m)
 
-		echo $c | xclip -selection clipboard
-		notify-send "dmenu-unicode" "'$c' copied to clipboard"
+	#	[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
 
-	elif [ "$len" = "2" ]
-	then
+	#	echo $c | xclip -selection clipboard
+	#	notify-send "dmenu-unicode" "'$c' copied to clipboard"
 
-		c=$(printf "\x$chosen")
-		len=$(printf "$c" | wc -m)
+	#elif [ "$len" = "2" ]
+	#then
 
-		[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
+	#	c=$(printf "\x$chosen")
+	#	len=$(printf "$c" | wc -m)
 
-		echo $c | xclip -selection clipboard
-		notify-send "dmenu-unicode" "'$c' copied to clipboard"
+	#	[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
 
-	else
-		notify-send "dmenu-unicode" "Invalid character code"
-	fi
+	#	echo $c | xclip -selection clipboard
+	#	notify-send "dmenu-unicode" "'$c' copied to clipboard"
+
+	#else
+	#	notify-send "dmenu-unicode" "Invalid character code"
+	#fi
+
+	# Case statement for the unicode length to check what printf to use
+	case $len in
+		4)
+
+			c=$(printf "\u$chosen")
+			# Check length of processed character to check validity of unicode
+			len=$(printf "$c" | wc -m)
+
+			# In the case of invalid statement, tell user and exit
+			[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
+
+			echo $c | xclip -selection clipboard
+			notify-send "dmenu-unicode" "'$c' copied to clipboard"
+
+		;;
+		2)
+
+			c=$(printf "\x$chosen")
+			# Check length of processed character to check validity of unicode
+			len=$(printf "$c" | wc -m)
+
+			# In the case of invalid statement, tell user and exit
+			[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
+
+			echo $c | xclip -selection clipboard
+			notify-send "dmenu-unicode" "'$c' copied to clipboard"
+
+		;;
+		*) notify-send "dmenu-unicode" "Invalid character code";;
+	esac
 
 	exit
 
