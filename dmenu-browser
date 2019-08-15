@@ -3,8 +3,9 @@
 dmenufont='Hack-9'
 dmenunb='#1c2023'
 dmenunf='#f3f4f5'
-dmenusb='#aec795'
+dmenusb='#c795ae'
 dmenusf='#1c2023'
+surfun='#c7ae95'
 
 # [ -z $1 ] && printf "empty input\n" && exit 1
 
@@ -15,14 +16,14 @@ then
 	case $chosen in
 		Firefox) firefox;;
 		Private) firefox --private-window "https://duckduckgo.com";;
-		Surf) tabbed -t '#1c2023' -T '#c795ae' -u '#1c2023' -U '#c7ae95' -cr 2 surf -pe x "https://duckduckgo.com";;
-		*) $BROWSER;;
+		Surf) tabbed -t $dmenunb -T $dmenusb -u $dmenunb -U $surfun -cr 2 surf -pe x "https://duckduckgo.com";;
+		*) notify-send "dmenu-browser" "Could not resolve browser string";;
 	esac
 else
 	case $chosen in
 		Firefox) firefox "$1";;
 		Private) firefox --private-window "$1";;
-		Surf) tabbed -t '#1c2023' -T '#c795ae' -u '#1c2023' -U '#c7ae95' -cr 2 surf -pe x "$1";;
+		Surf) tabbed -t $dmenunb -T $dmenusb -u $dmenunb -U $surfun -cr 2 surf -pe x "$1";;
 		*) $BROWSER "$1";;
 	esac
 fi
