@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 dmenufont='Hack-13'
 dmenunb='#1c2023'
@@ -6,10 +6,57 @@ dmenunf='#f3f4f5'
 dmenusb='#aec795'
 dmenusf='#1c2023'
 
-chosen=$(grep -v "#" ~/.emoji | dmenu -i -p "Emoji:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+emoji-resolve () { \
 
-[ "$chosen" != "" ] || exit
+	chosen=$(grep -v "#" ~/.emoji | dmenu -i -p "Emoji:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	
+	[ "$chosen" != "" ] || exit
+	
+	c=$(echo "$chosen" | sed "s/ .*//")
+	echo "$c" | tr -d '\n' | xclip -selection clipboard
+	notify-send "dmenu-unicode" "'$c' copied to clipboard."
 
-c=$(echo "$chosen" | sed "s/ .*//")
-echo "$c" | tr -d '\n' | xclip -selection clipboard
-notify-send "'$c' copied to clipboard."
+}
+
+unicode-resolve () { \
+
+	chosen=$(dmenu -p "Unicode Character:" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf <&-)
+
+	len=$(echo $chosen | tr -d '\n' | wc -m)
+
+	if [ "$len" = "4" ]
+	then
+		c=$(printf "\u$chosen")
+		len=$(printf "$c" | wc -m)
+
+		[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
+
+		echo $c | xclip -selection clipboard
+		notify-send "dmenu-unicode" "'$c' copied to clipboard"
+
+	elif [ "$len" = "2" ]
+	then
+
+		c=$(printf "\x$chosen")
+		len=$(printf "$c" | wc -m)
+
+		[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
+
+		echo $c | xclip -selection clipboard
+		notify-send "dmenu-unicode" "'$c' copied to clipboard"
+
+	else
+		notify-send "dmenu-unicode" "Invalid character code"
+	fi
+
+	exit
+
+}
+
+chosen=$(echo -e 'Emoji\nUnicode' | dmenu -i -p "Character Type:" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+
+case $chosen in
+	Unicode) unicode-resolve;;
+	Emoji) emoji-resolve;;
+	*) notify-send "dmenu-unicode" "Could not resolve management string"
+esac
