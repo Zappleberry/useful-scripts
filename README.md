@@ -7,3 +7,7 @@ Uses acpi and awk to extract battery information. There is another command in th
 ## Brightness Up/Down
 
 Uses xrandr, grep, and awk to modify brightness. Slight variation of it is commented out. They both have similar execution times but the one with awk is more flexible with  different brightness incriments.
+
+## mkgist
+
+Sends files as arguments to create gist on github
