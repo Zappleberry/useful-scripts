@@ -45,7 +45,8 @@ nm-wireguard-up () { \
 }
 
 nm-wireguard-down () { \
-	vpn=$(wg show interfaces | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	# note: this will not work well if your vpn files have spaces in the names
+	vpn=$(wg show interfaces | tr ' ' '\n' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	valid=$(wg show interfaces | grep $vpn)
 
