@@ -80,10 +80,10 @@ nm-device-resolve () { \
 }
 
 nm-connection-resolve () { \
-	act=$(echo -e 'up\ndown' | dmenu -i -p 'Connection Operation:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	act=$(echo -e 'Up\nDown' | dmenu -i -p 'Connection Operation:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf | sed 's/Up/up/g; s/Down/down/g')
 	[ -z "$act" ] && notify-send -u critical "dmenu-nm" "No connection operation specified" && exit 1
 
-	chosen=$(nmcli connection | grep -iv vpn | tail -n +2 | awk -F'   ' '{print $1}' | dmenu -i -p 'Connection:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	chosen=$(nmcli connection | grep -iv vpn | tail -n +2 | awk -F'  ' '{print $1}' | dmenu -i -p 'Connection:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 	[ -z "$chosen" ] && notify-send -u critical "dmenu-nm" "No connection specified" && exit 1
 
 	output=$(nmcli connection $act "$chosen")
