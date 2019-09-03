@@ -11,7 +11,7 @@ nm-openvpn-up () { \
 
 	state=$(nmcli con up $connection)
 	#if [ -n $(echo "state" | grep success ] 
-	notify-send "dmenu-nm" "VPN connected to $connection"
+	notify-send -u Low "dmenu-nm" "VPN connected to $connection"
 }
 
 nm-openvpn-down () { \
@@ -28,7 +28,7 @@ nm-openvpn-resolve () { \
 	case $chosen in
 		Up) nm-vpn-up;;
 		Down) nm-vpn-down;;
-		*) notify-send -u critical "dmenu-nm" "Could not resolve management string for VPN";;
+		*) notify-send "dmenu-nm" "Could not resolve management string for VPN";;
 	esac
 }
 
@@ -37,11 +37,11 @@ nm-wireguard-up () { \
 
 	valid=$(ls /etc/wireguard/ | grep $vpn)
 
-	[ -z "$vpn" ] && notify-send -u critical "dmenu-nm" "No VPN chosen" && exit 1
+	[ -z "$vpn" ] && notify-send "dmenu-nm" "No VPN chosen" && exit 1
 
 	[ -z "$valid" ] && notify-send -u critical "dmenu-nm" "Invalid VPN chosen" && exit 1
 
-	sudo -A wg-quick up $vpn && notify-send "dmenu-nm" " Connected to $vpn"
+	sudo -A wg-quick up $vpn && notify-send -u Low "dmenu-nm" " Connected to $vpn"
 }
 
 nm-wireguard-down () { \
@@ -50,11 +50,11 @@ nm-wireguard-down () { \
 
 	valid=$(wg show interfaces | grep $vpn)
 
-	[ -z "$vpn" ] && notify-send -u critical "dmenu-nm" "No VPN chosen" && exit 1
+	[ -z "$vpn" ] && notify-send "dmenu-nm" "No VPN chosen" && exit 1
 
 	[ -z "$valid" ] && notify-send -u critical "dmenu-nm" "Invalid VPN Chosen" && exit 1
 
-	sudo -A wg-quick down $vpn && notify-send "dmenu-nm" "Disconnected from $vpn"
+	sudo -A wg-quick down $vpn && notify-send -u Low "dmenu-nm" "Disconnected from $vpn"
 }
 
 nm-wireguard-resolve () { \
@@ -63,32 +63,32 @@ nm-wireguard-resolve () { \
 	case $chosen in
 		Up) nm-wireguard-up;;
 		Down) nm-wireguard-down;;
-		*) notify-send -u critical "dmenu-nm" "Could not resolve management string for WireGuard"
+		*) notify-send "dmenu-nm" "Could not resolve management string for WireGuard"
 	esac
 }
 
 nm-device-resolve () { \
 	act=$(echo -e 'connect\ndelete\ndisconnect' | dmenu -i -p 'Device Operation:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
-	[ -z "$act" ] && notify-send -u critical "dmenu-nm" "No device operation specified" && exit 1
+	[ -z "$act" ] && notify-send "dmenu-nm" "No device operation specified" && exit 1
 
 	chosen=$(nmcli device | tail -n +2 | awk '{print $1}' | dmenu -i -p 'Device:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
-	[ -z "$chosen" ] && notify-send -u critical "dmenu-nm" "No device specified" && exit 1
+	[ -z "$chosen" ] && notify-send "dmenu-nm" "No device specified" && exit 1
 
 	output=$(nmcli device $act "$chosen")
 	[ -z "$(echo $output | grep -iv error)" ] && notify-send -u critical "dmenu-nm" "Device error:\n$output" && exit 1
-	notify-send "dmenu-nm" "Device $act $chosen"
+	notify-send -u Low "dmenu-nm" "Device $act $chosen"
 }
 
 nm-connection-resolve () { \
 	act=$(echo -e 'Up\nDown' | dmenu -i -p 'Connection Operation:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf | sed 's/Up/up/g; s/Down/down/g')
-	[ -z "$act" ] && notify-send -u critical "dmenu-nm" "No connection operation specified" && exit 1
+	[ -z "$act" ] && notify-send "dmenu-nm" "No connection operation specified" && exit 1
 
 	chosen=$(nmcli connection | grep -iv vpn | tail -n +2 | awk -F'  ' '{print $1}' | dmenu -i -p 'Connection:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
-	[ -z "$chosen" ] && notify-send -u critical "dmenu-nm" "No connection specified" && exit 1
+	[ -z "$chosen" ] && notify-send "dmenu-nm" "No connection specified" && exit 1
 
 	output=$(nmcli connection $act "$chosen")
 	[ -z "$(echo $output | grep -iv error)" ] && notify-send -u critical "dmenu-nm" "Connection error:\n$output" && exit 1
-	notify-send "dmenu-nm" "Connection $act $chosen"
+	notify-send -u Low "dmenu-nm" "Connection $act $chosen"
 }
 
 chosen=$(echo -e 'Device\nConnection\nVPN\nBluetooth' | dmenu -i -p 'Type to Manage:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
@@ -98,5 +98,5 @@ case $chosen in
 	Connection) nm-connection-resolve;;
 	VPN) nm-wireguard-resolve;;
 	Bluetooth) nm-bt-resolve;;
-	*) notify-send -u critical "dmenu-nm" "Could not resolve management string"
+	*) notify-send "dmenu-nm" "Could not resolve management string"
 esac

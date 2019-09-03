@@ -11,7 +11,7 @@ nm-vpn-up () { \
 
 	state=$(nmcli con up $connection)
 	#if [ -n $(echo "state" | grep success ] 
-	notify-send "VPN" "Connected to $connection"
+	notify-send -u low "VPN" "Connected to $connection"
 }
 
 nm-vpn-down () { \
@@ -27,5 +27,5 @@ chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Manage VPN:' -fn $dmenufont -nb $dmen
 case $chosen in
 	Up) nm-vpn-up;;
 	Down) nm-vpn-down;;
-	*) notify-send -u critical "VPN" "Could not resolve management string";;
+	*) notify-send "VPN" "Could not resolve management string";;
 esac

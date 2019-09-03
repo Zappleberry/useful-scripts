@@ -17,7 +17,7 @@ emoji-resolve () { \
 	# Print character into clipboard
 	c=$(echo "$chosen" | sed "s/ .*//")
 	echo "$c" | tr -d '\n' | xclip -selection clipboard
-	notify-send "dmenu-unicode" "'$c' copied to clipboard."
+	notify-send -u low "dmenu-unicode" "'$c' copied to clipboard."
 
 }
 
@@ -65,10 +65,10 @@ unicode-resolve () { \
 			len=$(printf "$c" | wc -m)
 
 			# In the case of invalid statement, tell user and exit
-			[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
+			[ "$len" != "1" ] && notify-send -u critical "dmenu-unicode" "Invalid character code" && exit 1
 
 			echo $c | xclip -selection clipboard
-			notify-send "dmenu-unicode" "'$c' copied to clipboard"
+			notify-send -u low "dmenu-unicode" "'$c' copied to clipboard"
 
 		;;
 		2)
@@ -78,13 +78,13 @@ unicode-resolve () { \
 			len=$(printf "$c" | wc -m)
 
 			# In the case of invalid statement, tell user and exit
-			[ "$len" != "1" ] && notify-send "dmenu-unicode" "Invalid character code" && exit 1
+			[ "$len" != "1" ] && notify-send -u critical "dmenu-unicode" "Invalid character code" && exit 1
 
 			echo $c | xclip -selection clipboard
-			notify-send "dmenu-unicode" "'$c' copied to clipboard"
+			notify-send -u low "dmenu-unicode" "'$c' copied to clipboard"
 
 		;;
-		*) notify-send "dmenu-unicode" "Invalid character code";;
+		*) notify-send -u critical "dmenu-unicode" "Invalid character code";;
 	esac
 
 	exit

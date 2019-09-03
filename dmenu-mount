@@ -20,7 +20,7 @@ getmount() { \
 drive-mount () { \
 	chosen="$(echo "$usbdevices" | dmenu -i -p "Mount which drive?" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf | awk '{print $1}')"
 	[ -z "$chosen" ] && notify-send "dmenu-mount" "No device selected" && exit;
-	sudo -A mount "$chosen" 2>/dev/null && notify-send "dmenu-mount" "$chosen mounted." && exit 0
+	sudo -A mount "$chosen" 2>/dev/null && notify-send -u Low "dmenu-mount" "$chosen mounted." && exit 0
 	alreadymounted=$(lsblk -nrpo "name,type,mountpoint" | awk '$2=="part"&&$3!~/\/boot|\/home$|SWAP/&&length($3)>1{printf "-not \\( -path *%s -prune \\) \\ \n",$3}')
 	getmount "/mnt /media /mount /home -maxdepth 5 -type d $alreadymounted"
 	partitiontype="$(lsblk -no "fstype" "$chosen")"
@@ -29,7 +29,7 @@ drive-mount () { \
 		*) sudo -A mount -o umask=0077,uid=$(id -u $(whoami)),gid=$(id -g $(whoami)) "$chosen" "$mp";;
  		#*) sudo -A mount "$chosen" "$mp"; user="$(whoami)"; ug="$(groups | awk '{print $1}')"; sudo -A chown "$user":"$ug" "$mp";;
 	esac
-	notify-send "dmenu-mount" "Drive $chosen:\n$chosen mounted to $mp."
+	notify-send -u Low "dmenu-mount" "Drive $chosen:\n$chosen mounted to $mp."
 }
 
 drive-umount () { \
@@ -39,7 +39,7 @@ drive-umount () { \
 	
 	if [ "$mount_point" = "/" -o "$mount_point" = "/home" -o "$mount_point" = "/boot/efi" -o "$mount_point" = "[SWAP]" ]
 	then
-		notify-send "umount" "$mount_point is dangerous to unmount" && exit
+		notify-send -u Critical "dmenu-mount" "$mount_point is dangerous to unmount" && exit
 	fi
 	
 	o=$(sudo -A umount $mount_point 2>&1)
@@ -47,9 +47,9 @@ drive-umount () { \
 	
 	if [ -z "$(echo $o | grep -v unmounted)" ]
 	then
-		notify-send "dmenu-mount" "Drive $mount_point:\nunmounted successfully"
+		notify-send -u Low "dmenu-mount" "Drive $mount_point:\nunmounted successfully"
 	else
-		notify-send "dmenu-umount" "Drive $mount_point:\nunmount failed\n$o"
+		notify-send -u Critical "dmenu-mount" "Drive $mount_point:\nunmount failed\nREASON: $o"
 	fi
 
 	exit
@@ -57,24 +57,24 @@ drive-umount () { \
 
 android-mount () { \
 	chosen=$(echo "$anddevices" | dmenu -i -p "Which Android device?" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf | cut -d : -f 1)
-	[ -z "$chosen" ] && notify-send "dmenu-umount" "No Android device selected" && exit;
+	[ -z "$chosen" ] && notify-send "dmenu-mount" "No Android device selected" && exit;
 	getmount "$HOME -maxdepth 3 -type d"
 	simple-mtpfs --device "$chosen" "$mp"
-	notify-send "dmenu-mount" "Android $chosen:\nAndroid device mounted to $mp."
+	notify-send -u Low "dmenu-mount" "Android $chosen:\nAndroid device mounted to $mp."
 }
 
 android-umount () { \
 	chosen=$(awk '/simple-mtpfs/ {print $2}' /etc/mtab | dmenu -i -p "Unmount which device?" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 	[ -z "$chosen" ] && notify-send "dmenu-mount" "No mountpoint selected" && exit;
-	sudo -A umount -l "$chosen" && notify-send "dmenu-mount" "Android $chosen:\n$chosen unmounted."
+	sudo -A umount -l "$chosen" && notify-send -u Low "dmenu-mount" "Android $chosen:\n$chosen unmounted."
 }
 
 encrypted-mount () { \
-	notify-send "dmenu-mount" "Encryted Mounting not supported yet"
+	notify-send -u Critical "dmenu-mount" "Encryted Mounting not supported yet"
 }
 
 encrypted-umount () { \
-	notify-send "dmenu-mount" "Encrypted Unmounting not supported yet"
+	notify-send -u Critical "dmenu-mount" "Encrypted Unmounting not supported yet"
 }
 
 drive-specify () { \

@@ -11,11 +11,11 @@ wireguard-up () { \
 
 	valid=$(ls /etc/wireguard/ | grep $vpn)
 
-	[ -z "$vpn" ] && notify-send -u critical "dmenu-wireguard" "No VPN chosen" && exit 1
+	[ -z "$vpn" ] && notify-send "dmenu-wireguard" "No VPN chosen" && exit 1
 
 	[ -z "$valid" ] && notify-send -u critical "dmenu-wireguard" "Invalid VPN chosen" && exit 1
 
-	sudo -A wg-quick up $vpn && notify-send "dmenu-wireguard" " Connected to $vpn"
+	sudo -A wg-quick up $vpn && notify-send -u low "dmenu-wireguard" " Connected to $vpn"
 }
 
 wireguard-down () { \
@@ -23,11 +23,11 @@ wireguard-down () { \
 
 	valid=$(wg show interfaces | grep $vpn)
 
-	[ -z "$vpn" ] && notify-send -u critical "dmenu-wireguard" "No VPN chosen" && exit 1
+	[ -z "$vpn" ] && notify-send "dmenu-wireguard" "No VPN chosen" && exit 1
 
 	[ -z "$valid" ] && notify-send -u critical "dmenu-wireguard" "Invalid VPN Chosen" && exit 1
 
-	sudo -A wg-quick down $vpn && notify-send "dmenu-wireguard" "Disconnected from $vpn"
+	sudo -A wg-quick down $vpn && notify-send -u low "dmenu-wireguard" "Disconnected from $vpn"
 }
 
 chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Type to Manage:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
@@ -35,5 +35,5 @@ chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Type to Manage:' -fn $dmenufont -nb $
 case $chosen in
 	Up) wireguard-up;;
 	Down) wireguard-down;;
-	*) notify-send -u critical "dmenu-wireguard" "Could not resolve management string for WireGuard"
+	*) notify-send "dmenu-wireguard" "Could not resolve management string for WireGuard"
 esac
