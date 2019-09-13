@@ -1,0 +1,60 @@
+#!/bin/bash
+
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#aec795'
+dmenusf='#1c2023'
+
+normal () {\
+
+	# landscape (normal)
+	
+	xrandr -o normal
+	xinput set-prop "Atmel Atmel maXTouch Digitizer" --type=float "Coordinate Transformation Matrix" 0 0 0 0 0 0 0 0 0
+	#xinput set-prop "Your Touchpad's name, if applicable" --type=float "Coordinate Transformation Matrix" 0 0 0 0 0 0 0 0 0
+	#↳
+	xinput enable "SynPS/2 Synaptics TouchPad"
+
+}
+
+invert () {\
+	
+	# landscape (inverted)
+
+	xrandr -o inverted
+	xinput set-prop "Atmel Atmel maXTouch Digitizer" --type=float "Coordinate Transformation Matrix" -1 0 1 0 -1 1 0 0 1
+	#xinput set-prop "Your Touchpad's name, if applicable" --type=float "Coordinate Transformation Matrix" -1 0 1 0 -1 1 0 0 1
+	xinput disable "SynPS/2 Synaptics TouchPad"
+
+}
+
+left () {\
+
+	# portrait (left)
+
+	xrandr -o left
+	xinput set-prop "Atmel Atmel maXTouch Digitizer" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+	#xinput set-prop "Your Touchpad's name, if applicable" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+
+}
+
+right () {\
+
+	# portrait (right)
+	
+	xrandr -o right
+	xinput set-prop "Atmel Atmel maXTouch Digitizer" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+	#xinput set-prop "Your Touchpad's name, if applicable" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+
+}
+
+chosen=$(echo -e 'Normal\nInverted\nPortrait Left\nPortrait Right' | dmenu -i -p 'Orientation:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+
+case $chosen in
+	Normal) normal;;
+	Inverted) invert;;
+	*Left) left;;
+	*Right) right;;
+	*) notify-send "dmenu-orient" "Could not resolve management string"
+esac
