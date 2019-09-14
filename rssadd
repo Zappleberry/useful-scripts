@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Mimeapp script for adding rss feed to newsboat
+
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#95c7ae'
+dmenusf='#1c2023'
+
+clarify=$(printf 'No\nYes' | dmenu -i -p 'Add RSS Feed:' -fn $dmenufont -nb $dmenunb -sb $dmenusb -nf $dmenunf -sf $dmenusf)
+
+if [ "$clarify" = "Yes" ]; then
+	
+	name=$(dmenu -p "Enter RSS Name:" -fn $dmenufont -nb $dmenunb -sb $dmenusb -nf $dmenunf -sf $dmenusf <&-)
+
+	if [ -n "$name" ]; then
+		
+		echo "$@ \"~$name\"" >> ~/.newsboat/urls
+
+	else
+		
+		echo "$@" >> ~/.newsboat/urls
+
+	fi
+
+fi
