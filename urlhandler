@@ -14,6 +14,7 @@ videoFiles="mkv mp4 gif avi"
 imageFiles="png jpg jpeg jpe"
 wgetFiles="pdf"
 ytFiles="youtube.com|youtu.be"
+emailFile="mailto:"
 
 if echo $videoFiles | grep -w $ext > /dev/null; then
 	nohup mpv --loop --quiet "$1" > /dev/null &
