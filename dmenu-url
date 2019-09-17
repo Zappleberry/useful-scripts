@@ -1,5 +1,11 @@
 #!/bin/bash
 
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#f3f4f5'
+dmenusb='#aec795'
+dmenusf='#1c2023'
+
 input=
 
 while read stdin
@@ -8,6 +14,6 @@ while read stdin
 
 done
 
-chosen="$(printf "$input" | extracturls | dmenu)"
+chosen="$(printf "$input" | extracturls | dmenu -i -p "URL:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)"
 
 urlhandler $chosen
