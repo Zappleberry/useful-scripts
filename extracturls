@@ -2,4 +2,11 @@
 
 # This file is meant to take any number of lines and spit out the urls contained within, 1url per line
 
+while read stdin
 
+	# only doesn't work when contains []<>
+	do echo $stdin | grep -oE "(https?://)?[a-zA-Z0-9]*\.[A-Za-z0-9.~'*,()_/:;$\?\#@%&!=-\+]+|mailto:[a-zA-Z0-9._-]*@[a-zA-Z0-9._-]*"
+
+	#cat test.tx| grep -oE "(https?://)?[a-zA-Z0-9]*\.[a-zA-Z0-9.'_/:;\?@%&=-\+]+|mailto:[a-zA-Z0-9._-]*@[a-zA-Z0-9._-]*"
+
+done

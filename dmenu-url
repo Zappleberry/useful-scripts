@@ -1,4 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
-sed -E '/(((http|https|ftp|gopher)|mailto)[.:][^ >"\t]*|www\.[-a-z0-9.]+)[^ .,;\t>">\):]/p' $1
-#Alternative REGEXP (((http|https|ftp|gopher)|mailto):(//)?[^ >"\t]*|www\.[-a-z0-9.]+)[^ .,;\t>">\):]
+input=
+
+while read stdin
+
+	do input="$input$stdin\n"
+
+done
+
+chosen="$(printf "$input" | extracturls | dmenu)"
+
+urlhandler $chosen
