@@ -25,6 +25,9 @@ elif echo $wgetFiles | grep -w $ext > /dev/null; then
 elif [ -z $(echo $1 | grep -ivE $ytFiles) ]; then
 	# change me to youtubedl?
 	nohup mpv --quiet "$1" > /dev/null &
+elif [ -z $(echo $1 | grep -ivE $emailFiles) ]; then
+	# change me to abook?
+	nohup urxvt -e neomutt $1 &
 else
 	nohup $BROWSE "$1" > /dev/null &
 fi
