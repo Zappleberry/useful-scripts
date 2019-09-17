@@ -14,6 +14,8 @@ while read stdin
 
 done
 
-chosen="$(printf "$input" | extracturls | dmenu -i -p "URL:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)"
+chosen="$(printf "$input" | grep -oE "(https?://|ftp://|www.)[A-Za-z0-9.~'*,()_/:;$\?\#@%&!=-\+]+|mailto:[a-zA-Z0-9._-]*@[a-zA-Z0-9._-]*" | dmenu -i -p "URL:" -l 10 -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)"
+
+[ -z "$chosen" ] exit
 
 urlhandler $chosen
