@@ -7,9 +7,9 @@ dmenusb='#ae95c7'
 dmenusf='#1c2023'
 
 wireguard-up () { \
-	vpn=$(ls /etc/wireguard/ | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	vpn=$(ls /etc/wireguard/ 2>/dev/null | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
-	valid=$(ls /etc/wireguard/ | grep $vpn)
+	valid=$(ls /etc/wireguard/ 2>/dev/null | grep $vpn)
 
 	[ -z "$vpn" ] && notify-send "dmenu-wireguard" "No VPN chosen" && exit 1
 

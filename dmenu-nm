@@ -33,9 +33,9 @@ nm-openvpn-resolve () { \
 }
 
 nm-wireguard-up () { \
-	vpn=$(ls /etc/wireguard/ | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	vpn=$(ls /etc/wireguard/ 2>/dev/null | sed 's/\.conf//g' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
-	valid=$(ls /etc/wireguard/ | grep $vpn)
+	valid=$(ls /etc/wireguard/ 2>/dev/null | grep $vpn)
 
 	[ -z "$vpn" ] && notify-send "dmenu-nm" "No VPN chosen" && exit 1
 
@@ -57,12 +57,28 @@ nm-wireguard-down () { \
 	sudo -A wg-quick down $vpn && notify-send -u Low "dmenu-nm" "Disconnected from $vpn"
 }
 
+nm-wireguard-reup () { \
+	# note: this will not work well if your vpn files have spaces in the names
+	vpn=$(wg show interfaces | tr ' ' '\n' | dmenu -i -p 'VPN:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+
+	valid=$(wg show interfaces | grep $vpn)
+
+	[ -z "$vpn" ] && notify-send "dmenu-nm" "No VPN chosen" && exit 1
+
+	[ -z "$valid" ] && notify-send -u critical "dmenu-nm" "Invalid VPN Chosen" && exit 1
+
+	sudo -A wg-quick down $vpn && notify-send -u Low "dmenu-nm" "Disconnected from $vpn"
+
+	sudo -A wg-quick up $vpn && notify-send -u Low "dmenu-nm" " Reconnected to $vpn"
+}
+
 nm-wireguard-resolve () { \
-	chosen=$(echo -e 'Up\nDown' | dmenu -i -p 'Type to Manage:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
+	chosen=$(echo -e 'Up\nDown\nReUp' | dmenu -i -p 'Type to Manage:' -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf)
 
 	case $chosen in
 		Up) nm-wireguard-up;;
 		Down) nm-wireguard-down;;
+		ReUp) nm-wireguard-reup;;
 		*) notify-send "dmenu-nm" "Could not resolve management string for WireGuard"
 	esac
 }
