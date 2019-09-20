@@ -71,9 +71,10 @@ chosen=$(printf "%s\\nmulti-monitor\\nmanual selection" "$screens" | dmenu -fn $
 case "$chosen" in
 	"manual selection") arandr ; exit ;;
 	"multi-monitor") multimon ;;
-	*) xrandr --output "$chosen" --auto --scale 1.0x1.0 $(echo "$allposs" | grep -v "$chosen" | awk '{print "--output", $1, "--off"}' | tr '\n' ' ') ;;
+	*) xrandr --output "$chosen" --primary --auto --scale 1.0x1.0 $(echo "$allposs" | grep -v "$chosen" | awk '{print "--output", $1, "--off"}' | tr '\n' ' ') ;;
 esac
 
+# TODO run bspc to swap previous monitor with active monitor
 # setbg		# Fix background if screen size/arangement has changed.
 # remaps		# Re-remap keys if keyboard added (for laptop bases)
 pgrep -x dunst >/dev/null && killall dunst && setsid dunst & # Restart dunst to ensure proper location on screen
