@@ -74,7 +74,31 @@ case "$chosen" in
 	*) xrandr --output "$chosen" --primary --auto --scale 1.0x1.0 $(echo "$allposs" | grep -v "$chosen" | awk '{print "--output", $1, "--off"}' | tr '\n' ' ') ;;
 esac
 
-# TODO run bspc to swap previous monitor with active monitor
+# Use $(xrandr --listactivemonitors | awk '$4!=""{print $4}') to get list of active monitors
+# Use $(xrandr -q | grep $MONITOR | grep -oE '[0-9]+x[0-9]+\+[0-9]+\+[0-9]+') using \d didn't work for me
+# Use bspc monitor $MONITOR -g $GEOMETRY_XRANDR
+# TODO Figure out how to configure desktops on outside monitor
+
+if [ -n "$pgrep bspwm" ]; then
+
+	activemons=$(xrandr --listactivemonitors | awk '$4!=""{print $4}')
+	
+	for MONITOR in $activemons
+	do
+	
+		bspc monitor -f $MONITOR
+		bspc monitor $MONITOR -g $(xrandr -q | grep $MONITOR | grep -oE '[0-9]+x[0-9]+\+[0-9]+\+[0-9]+')
+		echo "bspc monitor $MONITOR -g $(xrandr -q | grep $MONITOR | grep -oE '[0-9]+x[0-9]+\+[0-9]+\+[0-9]+')"
+			
+	done
+
+	# have to restart the window manager for some reason
+	bspc wm -r
+
+	bspc config top_padding $(bspc config top_padding)
+
+fi
+
 # setbg		# Fix background if screen size/arangement has changed.
 # remaps		# Re-remap keys if keyboard added (for laptop bases)
 pgrep -x dunst >/dev/null && killall dunst && setsid dunst & # Restart dunst to ensure proper location on screen
