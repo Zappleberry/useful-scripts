@@ -1,0 +1,20 @@
+#!/bin/sh
+
+month="$(date +%m)"
+
+case $month in
+
+	01) echo "Winter";;
+	02) echo "Winter";;
+	03) echo "Spring";;
+	04) echo "Spring";;
+	05) echo "Spring";;
+	06) echo "Summer";;
+	07) echo "Summer";;
+	08) echo "Summer";;
+	09) echo "Autumn";;
+	10) echo "Autumn";;
+	11) echo "Autumn";;
+	12) echo "Winter";;
+
+esac
