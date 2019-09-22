@@ -1,9 +1,10 @@
 #!/bin/sh
 
+# This script is originally written by Luke Smith
+# I have made some modifications
+
 # A UI for detecting and selecting all displays.
 # Probes xrandr for connected displays and lets user select one to use.
-# User may also select "manual selection" which opens arandr.
-# I plan on adding a routine from multi-monitor setups later.
 
 dmenufont='Hack-9'
 dmenunb='#1c2023'
