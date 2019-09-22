@@ -4,4 +4,6 @@ walldir="/home/$(whoami)/Pictures/Wallpapers/Landscapes/"
 
 wal=$(find $walldir | grep -iE 'jpg|jpeg|png' | shuf -n 1)
 
-cp $wal ~/.wallpaper.png
+convert $wal ~/.wallpaper.png
+
+set-wallpaper
