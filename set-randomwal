@@ -1,6 +1,7 @@
 #!/bin/sh
 
 walldir="/home/$(whoami)/Pictures/Wallpapers/Landscapes/"
+# walldir="/home/$(whoami)/Pictures/Wallpapers/Landscapes/$(get-season)"
 
 wal=$(find $walldir | grep -iE 'jpg|jpeg|png' | shuf -n 1)
 
