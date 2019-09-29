@@ -80,7 +80,7 @@ esac
 # Use bspc monitor $MONITOR -g $GEOMETRY_XRANDR
 # TODO Figure out how to configure desktops on outside monitor
 
-if [ -n "$pgrep bspwm" ]; then
+if [ -n "$pgrep bspwm" ] && [ -n "$chosen" ] ; then
 
 	activemons=$(xrandr --listactivemonitors | awk '$4!=""{print $4}')
 	
