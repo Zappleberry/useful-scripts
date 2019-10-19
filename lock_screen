@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Must have i3lock-color
+
+$color_fg='f3f4f5ff'
+
+i3lock -i ~/.wallpaper.png \
+	--verifsize=16 \
+	--veriftext="Verifying" \
+	--radius 150 \
+	--ring-width 25 \
+	--indicator \
+	--clock \
+	--timestr="%H:%M" \
+	--linecolor='00000000' \
+	--insidecolor='1c2023bb' \
+	--ringcolor='aec795ff' \
+	--datecolor='f3f4f5ff' \
+	--timecolor='f3f4f5ff' \
+	--separatorcolor='c795aeff' \
+	--keyhlcolor='c795aeff'
