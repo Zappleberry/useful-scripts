@@ -10,10 +10,10 @@
 BROWSE="firefox"
 
 ext="${1##*.}"
-videoFiles="mkv mp4 gif avi"
+videoFiles="mkv mp4 gif avi gifv"
 imageFiles="png jpg jpeg jpe"
 wgetFiles="pdf"
-ytFiles="youtube.com|youtu.be"
+ytFiles="youtube.com|youtu.be|v.redd.it|gfycat.com"
 emailFile="mailto:"
 
 if echo $videoFiles | grep -w $ext > /dev/null; then
