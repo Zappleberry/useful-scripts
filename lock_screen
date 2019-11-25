@@ -2,16 +2,18 @@
 
 # Must have i3lock-color
 
-$color_fg='f3f4f5ff'
+color_fg='f3f4f5ff'
 
 i3lock -i ~/.wallpaper.png \
 	--verifsize=16 \
 	--veriftext="Verifying" \
 	--radius 150 \
 	--ring-width 25 \
+	--indpos="r:h-r" \
 	--indicator \
 	--clock \
 	--timestr="%H:%M" \
+	--datestr="%A, %F" \
 	--linecolor='00000000' \
 	--insidecolor='1c2023bb' \
 	--ringcolor='aec795ff' \
