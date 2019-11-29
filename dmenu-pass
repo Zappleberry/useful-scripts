@@ -1,0 +1,11 @@
+#!/bin/sh
+
+dmenufont='Hack-9'
+dmenunb='#1c2023'
+dmenunf='#1c2023'
+dmenusb='#95aec7'
+dmenusf='#1c2023'
+
+# the <&- allows dmenu to be run with no options
+
+dmenu -p "$1:" -fn $dmenufont -nb $dmenunb -nf $dmenunf -sb $dmenusb -sf $dmenusf <&-
