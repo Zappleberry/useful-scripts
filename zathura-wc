@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# This script takes a pdf file name as the input and outputs the number of words in the pdf file
+# works best with simple pdf files
+
+notify-send "PDF Word Count" "$1 word count: $(pdftotext $1 - | wc -w)"
