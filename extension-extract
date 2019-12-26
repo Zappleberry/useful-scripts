@@ -6,6 +6,6 @@ site=$(curl -sq "$2")
 # Does not work on sites with multiple urls yet
 
 url=$(echo "$site" | grep -oE "https:\/\/[a-zA-Z0-9./_-]*\.$ext")
-title="$(echo "$site" | grep -i '<title>' | sed -E 's/<title>//g' | sed -E 's/<\/title>//g' | sed -E 's/\ /_/g' | sed -E 's/[:!&.]//g' | sed -E 's/\(.*\)//g' | tr -d \' | tr -d '\t').$ext"
+title="$(echo "$site" | grep -i '<title>' | sed -E 's/<title>//g' | sed -E 's/<\/title>//g' | sed -E 's/\ /_/g' | sed -E 's/[,;:!&?]//g' | sed -E 's/\(.*\)//g' | tr -d \' | tr -d '\t').$ext"
 
 wget -O "$title" "$url"
