@@ -5,6 +5,18 @@ walldir="/home/$(whoami)/Pictures/Wallpapers/Seasonal/$(get-season)/"
 
 wal=$(find $walldir | grep -iE 'jpg|jpeg|png' | shuf -n 1)
 
-convert $wal ~/.wallpaper.png
+ratio=$(echo "$(convert $1 -print '%w.0/%h.0' /dev/null)" | bc -l)
+screenratio=$(echo "$(xrandr | grep 'current' | sed 's/.*current //' | sed 's/, max.*//'| sed 's/ x /\//')" | bc -l)
+screenwidth=$(xrandr | grep 'current' | sed 's/.*current //' | sed 's/, max.*//'| sed 's/ x .*//')
+screenheight=$(xrandr | grep 'current' | sed 's/.*current //' | sed 's/, max.*//'| sed 's/.* x //')
+seperator='x'
+
+if [ -z $(echo "$ratio<$screenratio" | bc | grep -v '1') ]; then
+	convert -resize $screenwidth$seperator $wal ~/.wallpaper.png
+else
+	convert -resize $seperator$screenheight $wal ~/.wallpaper.png
+fi
+
+#convert $wal ~/.wallpaper.png
 
 set-wallpaper
