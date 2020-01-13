@@ -9,7 +9,7 @@ i3lock -i ~/.wallpaper.png \
 	--veriftext="Verifying" \
 	--radius 150 \
 	--ring-width 25 \
-	--indpos="r:h-r" \
+	--indpos="w/2:h/2" \
 	--indicator \
 	--clock \
 	--timestr="%H:%M" \
