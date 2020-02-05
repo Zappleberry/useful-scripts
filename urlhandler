@@ -7,6 +7,8 @@
 # else the file will open in the browser
 #  -t '#1c2023' -T '#c795ae' -u '#1c2023' -U '#c7ae95'
 
+# requires smenu
+
 BROWSE="firefox"
 
 ext="${1##*.}"
@@ -16,7 +18,7 @@ wgetFiles="pdf"
 ytFiles="youtube.com|youtu.be|v.redd.it|gfycat.com"
 emailFile="mailto:"
 
-decision=$(printf "Copy\nExecute" | slmenu -t -i -p "How to handle url:")
+decision=$(printf "Copy\nExecute" | smenu -l -d -m "How to handle url:")
 
 case $decision in
 	   Copy) echo "$1" | xclip -i -selection clipboard;;
