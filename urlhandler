@@ -16,18 +16,27 @@ wgetFiles="pdf"
 ytFiles="youtube.com|youtu.be|v.redd.it|gfycat.com"
 emailFile="mailto:"
 
-if echo $videoFiles | grep -w $ext > /dev/null; then
-	nohup mpv --loop --quiet "$1" > /dev/null &
-elif echo $imageFiles | grep -w $ext > /dev/null; then
-	nohup feh -. "$1" > /dev/null &
-elif echo $wgetFiles | grep -w $ext > /dev/null; then
-	nohup wget "$1" > /dev/null &
-elif [ -z $(echo $1 | grep -ivE $ytFiles) ]; then
-	# change me to youtubedl?
-	nohup mpv --quiet --loop "$1" > /dev/null &
-#elif [ -z $(echo $1 | grep -ivE $emailFiles) ]; then
-#	# change me to abook?
-#	nohup urxvt -e neomutt $1 &
-else
-	nohup $BROWSE "$1" > /dev/null &
-fi
+decision=$(printf "Copy\nExecute" | slmenu -t -i -p "How to handle url:")
+
+case $decision in
+	   Copy) echo "$1" | xclip -i -selection clipboard;;
+	   Execute)
+			 if echo $videoFiles | grep -w $ext > /dev/null; then
+				    nohup mpv --loop --quiet "$1" > /dev/null &
+			 elif echo $imageFiles | grep -w $ext > /dev/null; then
+				    nohup feh -. "$1" > /dev/null &
+			 elif echo $wgetFiles | grep -w $ext > /dev/null; then
+				    nohup wget "$1" > /dev/null &
+			 elif [ -z $(echo $1 | grep -ivE $ytFiles) ]; then
+				    # change me to youtubedl?
+				    nohup mpv --quiet --loop "$1" > /dev/null &
+				    #elif [ -z $(echo $1 | grep -ivE $emailFiles) ]; then
+				    #	# change me to abook?
+				    #	nohup urxvt -e neomutt $1 &
+			 else
+				    nohup $BROWSE "$1" > /dev/null &
+			 fi;;
+	   *) notify-send "slmenu-url" "Could not resolve management string"
+esac
+
+clear
