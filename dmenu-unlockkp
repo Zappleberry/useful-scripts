@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pkill keepassxc
+
+keepassxc --pw-stdin "$1" <<< $(dmenu-pass "Enter keepassxc password")
