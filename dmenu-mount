@@ -1,7 +1,7 @@
 #!/bin/bash
 # Parts derived from some of Luke Smith's dmenu scripts
 
-dmenufont='Hack-9'
+dmenufont='Hack-14'
 dmenunb='#1c2023'
 dmenunf='#f3f4f5'
 dmenusb='#95c7ae'

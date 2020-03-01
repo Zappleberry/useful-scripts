@@ -2,7 +2,7 @@
 
 # Mimeapp script for adding rss feed to newsboat
 
-dmenufont='Hack-9'
+dmenufont='Hack-14'
 dmenunb='#1c2023'
 dmenunf='#f3f4f5'
 dmenusb='#95c7ae'

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dmenufont='Hack-9'
+dmenufont='Hack-14'
 dmenunb='#1c2023'
 dmenunf='#f3f4f5'
 dmenusb='#c795ae'
