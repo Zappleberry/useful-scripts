@@ -45,7 +45,7 @@ drive-umount () { \
 	o=$(sudo -A umount $mount_point 2>&1)
 	sync
 	
-	if [ -z "$(echo $o | grep -v unmounted | grep -iv 'Sorry, try again')" ]
+	if [ -z "$(lsblk -rpo "mountpoint" | grep -x $mount_point)" ]
 	then
 		notify-send -u Low "dmenu-mount" "Drive $mount_point:\nunmounted successfully"
 	else
